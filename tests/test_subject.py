@@ -5,7 +5,7 @@
 
 __all__ = [
     'TestSubjectSuite',
-    'TestSubjectFromCallableSuite',
+    # 'TestSubjectFromCallableSuite',
 ]
 __version__ = '0.1.0.0'
 __author__ = 'Midhun C Nair <midhunch@gmail.com>'
@@ -18,12 +18,11 @@ import unittest
 
 from time import sleep
 
-from pspy import (
-    Subject,
-    SubjectFromCallable,
+from pspy.subject import Subject
+from pspy.contrib import (
     map as psmap,
-    Subscriber,
 )
+from pspy.subscriber import Subscriber
 
 from .constants import (
     NEXT_WAIT,
@@ -37,9 +36,9 @@ class TestSubjectSuite(unittest.TestCase):
     def test_initialize_same_subject(self):
         """
         """
-        sub1 = Subject('test_initialize', 'val1')
+        sub1 = Subject('test_initialize', initial_value='val1')
         sub1.subscribe(onSuccess=lambda value: None, onError=lambda error: None)
-        sub2 = Subject('test_initialize', 'val2')
+        sub2 = Subject('test_initialize', initial_value='val2')
         self.assertEqual(id(sub1), id(sub2))
         self.assertNotEqual(sub1.value, 'val1')
         self.assertEqual(sub1.value, 'val2')
@@ -50,14 +49,42 @@ class TestSubjectSuite(unittest.TestCase):
     def test_initialize_publisher_singleton(self):
         """
         """
-        sub1 = Subject('test_initialize_publisher_singleton', 'val1')
-        sub2 = Subject('test_initialize_publisher_singleton1', 'val1')
+        sub1 = Subject('test_initialize_publisher_singleton', initial_value='val1')
+        sub2 = Subject('test_initialize_publisher_singleton1', initial_value='val1')
         self.assertEqual(id(sub1.publisher), id(sub2.publisher))
+
+    def test_initialize_string_sub(self):
+        """
+        """
+        sub = Subject('test_initialize')
+        self.assertTrue(hasattr(sub, 'subject'))
+        self.assertTrue(hasattr(sub, 'initial_value'))
+        self.assertTrue(hasattr(sub, 'value'))
+        self.assertTrue(hasattr(sub, '_args'))
+        self.assertTrue(hasattr(sub, '_kwargs'))
+        self.assertTrue(hasattr(sub, 'index'))
+        self.assertEqual(sub.index, -1)
+        self.assertTupleEqual(sub._args, tuple())
+        self.assertDictEqual(sub._kwargs, dict())
+
+    def test_initialize_string_callable(self):
+        """
+        """
+        sub = Subject(lambda x=None: None)
+        self.assertTrue(hasattr(sub, 'subject'))
+        self.assertTrue(hasattr(sub, 'initial_value'))
+        self.assertTrue(hasattr(sub, 'value'))
+        self.assertTrue(hasattr(sub, '_args'))
+        self.assertTrue(hasattr(sub, '_kwargs'))
+        self.assertTrue(hasattr(sub, 'index'))
+        self.assertEqual(sub.index, -1)
+        self.assertTupleEqual(sub._args, tuple())
+        self.assertDictEqual(sub._kwargs, dict())
 
     def test_subscribe(self):
         """
         """
-        sub = Subject('test_subscribe', 'val1')
+        sub = Subject('test_subscribe', initial_value='val1')
         test_val = False
         def on_success(value):
             nonlocal test_val
@@ -73,7 +100,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_pipe(self):
         """
         """
-        sub = Subject('test_pipe', 'val1')
+        sub = Subject('test_pipe', initial_value='val1')
 
         t_val1 = False
         def on_success1(value):
@@ -99,7 +126,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_next(self):
         """
         """
-        sub = Subject('text_next', 'val1')
+        sub = Subject('test_next', initial_value='val1')
         t_val1 = False
         def on_success1(value):
             nonlocal t_val1
@@ -145,7 +172,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_next_async(self):
         """
         """
-        sub = Subject('text_next', 'val1')
+        sub = Subject('test_next_async', initial_value='val1')
         t_val1 = False
         def on_success1(value):
             nonlocal t_val1
@@ -179,8 +206,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_unsubscribe(self):
         """
         """
-        sub = Subject('test_unsubscribe', 'val1')
-        sub = Subject('text_next', 'val1')
+        sub = Subject('test_unsubscribe', initial_value='val1')
         t_val1 = False
         def on_success1(value):
             nonlocal t_val1
@@ -213,8 +239,8 @@ class TestSubjectSuite(unittest.TestCase):
     def test_add_subscriber(self):
         """
         """
-        sub = Subject('test_add_subscriber', 'val1')
-        sub2 = Subject('test_add_subscriber_1', 'val1')
+        sub = Subject('test_add_subscriber', initial_value='val1')
+        sub2 = Subject('test_add_subscriber_1', initial_value='val1')
         subs = Subscriber(sub, onSuccess=lambda value: None)
 
         self.assertTrue(subs.name in sub.subscribers)
@@ -231,35 +257,11 @@ class TestSubjectSuite(unittest.TestCase):
     def test_add_subscriber_wrong_type(self):
         """
         """
-        sub = Subject('test_add_subscriber', 'val1')
+        sub = Subject('test_add_subscriber', initial_value='val1')
         with self.assertRaises(ValueError):
             sub.add_subscriber("test")
 
-
-class TestSubjectFromCallableSuite(unittest.TestCase):
-    """
-    """
-    def test_initialize_wrong_input(self):
-        """
-        """
-        with self.assertRaises(ValueError):
-            SubjectFromCallable('test_initialize_wrong_input')
-
-    def test_initialize(self):
-        """
-        """
-        sub = SubjectFromCallable(lambda x: None)
-        self.assertTrue(hasattr(sub, 'subject'))
-        self.assertTrue(hasattr(sub, 'initial_value'))
-        self.assertTrue(hasattr(sub, 'value'))
-        self.assertTrue(hasattr(sub, '_args'))
-        self.assertTrue(hasattr(sub, '_kwargs'))
-        self.assertTrue(hasattr(sub, 'index'))
-        self.assertEqual(sub.index, -1)
-        self.assertTupleEqual(sub._args, tuple())
-        self.assertDictEqual(sub._kwargs, dict())
-
-    def test_subscribe_async_n_output(self):
+    def test_sub_callable_subscribe_async_n_output(self):
         """
         """
         test_args = (1, 2, 3)
@@ -276,11 +278,10 @@ class TestSubjectFromCallableSuite(unittest.TestCase):
             test_output = value
 
         self.assertEqual(test_output, False)
-        sub = SubjectFromCallable(callable_subject, *test_args, **test_kwargs)
+        sub = Subject(callable_subject, *test_args, **test_kwargs)
         sub.subscribe(onSuccess=on_success)
         sleep(NEXT_WAIT)
         self.assertEqual(test_output, None)
         sleep(2*ASYNC_TIME + NEXT_WAIT)
         self.assertTupleEqual(test_output[0], test_args)
         self.assertDictEqual(test_output[1], test_kwargs)
-

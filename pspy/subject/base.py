@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""This module defines the subject functionalities for the pub-sub-python
+"""This module defines the base subject functionalities for the pub-sub-python
 """
 
 
@@ -19,12 +19,12 @@ from concurrent.futures import (
     as_completed,
 )
 
-# from uuid import uuid4
+from pspy.utils import (
+    import_string,
+)
 
-from .subscriber import Subscriber
 
-
-class Subject:
+class BaseSubject:
     """Defines a subject to which anyone can subscribe to.
     """
     _publisher = None
@@ -33,10 +33,12 @@ class Subject:
     def __new__(cls, subject, *args, initial_value=None, **kwargs):
         """
         """
-        from .core import Publisher
+        Publisher = import_string('pspy.publisher.Publisher')
         pub = Publisher()
         if subject not in pub.subjects:
             pub.subjects[subject] = super().__new__(cls)
+            cls._publisher = pub
+            cls.SubscriberClass = import_string('pspy.subscriber.Subscriber')
         else:
             if initial_value is not None:
                 pub.subjects[subject].next(initial_value)
@@ -49,28 +51,41 @@ class Subject:
         self.subject = subject
         self.initial_value = initial_value
         self.value = initial_value
+        # self.SubscriberClass = import_string('pspy.subscriber.Subscriber')
 
     @property
     def publisher(self):
         """
         """
-        from .core import Publisher
+        Publisher = import_string('pspy.publisher.Publisher')
         if not isinstance(self._publisher, Publisher):
             self._publisher = Publisher()
         return self._publisher
 
+    @property
+    def subject(self):
+        """
+        """
+        return self._subject
+
+    @subject.setter
+    def subject(self, value):
+        """
+        """
+        self._subject = value
+
     def subscribe(self, onSuccess, onError=None):
         """
         """
-        sub = Subscriber(subject=self, onSuccess=onSuccess, onError=onError)
+        sub = self.SubscriberClass(subject=self, onSuccess=onSuccess, onError=onError)
         # subscriber gets added to the instance on creation automatically.
         return sub
 
     def add_subscriber(self, subscriber):
         """
         """
-        from .subscriber import Subscriber
-        if not isinstance(subscriber, Subscriber):
+        # from pspy.subscriber import Subscriber
+        if not isinstance(subscriber, self.SubscriberClass):
             raise ValueError(
                 "Expected value of type Subscriber but got %s." % type(subscriber)
             )
@@ -89,7 +104,7 @@ class Subject:
     def add_pipe(self, item):
         """
         """
-        from .contrib import (
+        from pspy.contrib import (
             Map,
         )
         if not (
@@ -235,65 +250,3 @@ class Subject:
         """
         del self.subscribers[subscriber.name]
         del subscriber
-
-
-class SubjectFromCallable(Subject):
-    """
-    """
-    def __init__(self, subject, *args, initial_value=None, **kwargs):
-        """
-        """
-        self.subject = subject
-        self.initial_value = initial_value
-        self.value = None
-        self._args = args
-        self._kwargs = kwargs
-        self.index = -1
-
-    @property
-    def subject(self):
-        """
-        """
-        return self._subject
-
-    @subject.setter
-    def subject(self, value):
-        """
-        """
-        if not callable(value):
-            raise ValueError(
-                "Expected a value of type callable but got %s" % type(value)
-            )
-
-        self._subject = value
-
-    def subscribe(self, *args, **kwargs):
-        """
-        """
-        sub = super().subscribe(*args, **kwargs)
-        # subscriber gets added to the instance on creation automatically.
-        if self.index == -1:
-            self.run()
-
-        return sub
-
-    def run(self):
-        """
-        """
-        self.index = 0
-        def _run():
-            """
-            """
-            result = None
-
-            with ThreadPoolExecutor(2) as executer:
-                future = executer.submit(self.subject, *self._args, **self._kwargs)
-                while not future.done():
-                    sleep(1)
-                result = future.result()
-
-            self.next(result)
-
-        thread = Thread(target=_run)
-        thread.daemon = True
-        thread.start()

@@ -15,10 +15,10 @@ import unittest
 
 from time import sleep
 
-from pspy import (
-    Subject,
+from pspy.subscriber import (
     Subscriber,
 )
+from pspy.subject import Subject
 
 from .constants import (
     NEXT_WAIT,
@@ -40,56 +40,56 @@ class TestSubscriberSuite(unittest.TestCase):
     def test_initialize_wrong_onSuccess_1(self):
         """
         """
-        sub = Subject('test_initialize_wrong_onSuccess_1', None)
+        sub = Subject('test_initialize_wrong_onSuccess_1')
         with self.assertRaises(ValueError):
             Subscriber(sub, onSuccess="onSuccess")
 
     def test_initialize_wrong_onSuccess_2(self):
         """
         """
-        sub = Subject('test_initialize_wrong_onSuccess_2', None)
+        sub = Subject('test_initialize_wrong_onSuccess_2')
         with self.assertRaises(ValueError):
             Subscriber(sub, onSuccess=None)
 
     def test_initialize_wrong_onSuccess_3(self):
         """
         """
-        sub = Subject('test_initialize_wrong_onSuccess_3', None)
+        sub = Subject('test_initialize_wrong_onSuccess_3')
         with self.assertRaises(ValueError):
             Subscriber(sub, onSuccess={})
 
     def test_initialize_wrong_onSuccess_4(self):
         """
         """
-        sub = Subject('test_initialize_wrong_onSuccess_4', None)
+        sub = Subject('test_initialize_wrong_onSuccess_4')
         with self.assertRaises(ValueError):
             Subscriber(sub, onSuccess={'func':'func'})
 
     def test_initialize_wrong_onError_1(self):
         """
         """
-        sub = Subject('test_initialize_wrong_onError_1', None)
+        sub = Subject('test_initialize_wrong_onError_1')
         with self.assertRaises(ValueError):
             Subscriber(sub, onSuccess=lambda value: None, onError="onError")
 
     def test_initialize_wrong_onError_2(self):
         """
         """
-        sub = Subject('test_initialize_wrong_onError_2', None)
+        sub = Subject('test_initialize_wrong_onError_2')
         with self.assertRaises(ValueError):
             Subscriber(sub, onSuccess=lambda value: None, onError={'func':'func'})
 
     def test_initialize_wrong_onError_3(self):
         """
         """
-        sub = Subject('test_initialize_wrong_onError_3', None)
+        sub = Subject('test_initialize_wrong_onError_3')
         with self.assertRaises(ValueError):
             Subscriber(sub, onSuccess=lambda value: None, onError={})
 
     def test_initialize(self):
         """
         """
-        sub = Subject('test_initialize', 'init_val')
+        sub = Subject('test_initialize', initial_value='init_val')
         subs = Subscriber(sub, onSuccess=lambda value: None)
         self.assertEqual(id(sub), id(subs.subject))
         self.assertTrue(subs.name in sub.subscribers)
@@ -97,7 +97,7 @@ class TestSubscriberSuite(unittest.TestCase):
     def test_success_1(self):
         """
         """
-        sub = Subject('test_success_1', 'init_val')
+        sub = Subject('test_success_1', initial_value='init_val')
         test_val = False
         def on_success(value):
             nonlocal test_val
@@ -112,7 +112,7 @@ class TestSubscriberSuite(unittest.TestCase):
     def test_success_2(self):
         """
         """
-        sub = Subject('test_success_2', 'init_val')
+        sub = Subject('test_success_2', initial_value='init_val')
         test_args = None
         test_val = False
         test_kwargs = None
@@ -148,7 +148,7 @@ class TestSubscriberSuite(unittest.TestCase):
     def test_error_1(self):
         """
         """
-        sub = Subject('test_error_1', 'init_val')
+        sub = Subject('test_error_1', initial_value='init_val')
         test_val = False
         def on_error(error):
             nonlocal test_val
@@ -163,7 +163,7 @@ class TestSubscriberSuite(unittest.TestCase):
     def test_error_2(self):
         """
         """
-        sub = Subject('test_error_2', 'init_val')
+        sub = Subject('test_error_2', initial_value='init_val')
         test_args = None
         test_val = False
         test_kwargs = None
@@ -196,7 +196,7 @@ class TestSubscriberSuite(unittest.TestCase):
     def test_unsubscribe(self):
         """
         """
-        sub = Subject('test_unsubscribe', 'init_val')
+        sub = Subject('test_unsubscribe', initial_value='init_val')
         test_val = False
         def on_success(value):
             nonlocal test_val

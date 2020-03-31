@@ -31,7 +31,7 @@ class Merge:
         """
         self.id = str(uuid4())
         self.int_id = get_unique_id(self.id)[0]
-        self.subject = Subject(self.int_id, None)
+        self.subject = Subject(self.int_id, initial_value=None)
 
         self.args = args
         for sub in self.args:
@@ -106,7 +106,7 @@ class Of:
         """
         self.id = str(uuid4())
         self.int_id = get_unique_id(self.id)[0]
-        self.subject = Subject(self.int_id, None)
+        self.subject = Subject(self.int_id, initial_value=None)
 
         self.args = args
         self.index = -1

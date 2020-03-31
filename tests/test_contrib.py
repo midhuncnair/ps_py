@@ -24,13 +24,13 @@ from time import (
     time,
 )
 
-from pspy import (
+from pspy.contrib import (
     Merge,
     Of,
     Map as psMap,
     map as psmap,
-    Subject,
 )
+from pspy.subject import Subject
 
 from .constants import (
     NEXT_WAIT,
@@ -164,37 +164,20 @@ class TestOfSuite(unittest.TestCase):
         prev_val2 = False
         def on_success2(value):
             nonlocal test_val2, prev_val2
+            lock.acquire()
             prev_val2 = test_val2
             test_val2 = value
+            lock.release()
 
         self.assertEqual(test_val1, False)
         of_obj.subscribe(onSuccess=on_success1)
         of_obj.subscribe(onSuccess=on_success2)
-        # sleep(NEXT_WAIT)
-        prev_prev = prev_val1
-        start = time()
-        loop_start = time()
-        while (
-            test_val1 != of_args[-1]
-            or test_val2 != of_args[-1]
-        ):
-            if prev_prev != prev_val1:
-                if prev_prev is None:
-                    check = False
-                else:
-                    check = True
-                end = time()
-                elapsed = end - start
-                start = time()
-                prev_prev = prev_val1
-                # print("time taken = ", elapsed)
-                if check:
-                    self.assertAlmostEqual(elapsed, 2, 0)
-
-            loop_time = time()
-            loop_elapsed = loop_time - loop_start
-            # if loop_elapsed > timeout * len(of_args) + NEXT_WAIT:
-            self.assertFalse(loop_elapsed > timeout * len(of_args) + NEXT_WAIT)
+        sleep(NEXT_WAIT)
+        self.assertEqual(test_val1, of_args[0])
+        self.assertEqual(test_val2, of_args[0])
+        sleep(timeout+NEXT_WAIT)
+        self.assertEqual(test_val1, of_args[1])
+        self.assertEqual(test_val2, of_args[1])
 
 
 class TestMapClassSuite(unittest.TestCase):

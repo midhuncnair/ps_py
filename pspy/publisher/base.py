@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""This module defines the core functionalities for the pub-sub-python
+"""This module defines the base functionalities for the publisher  pub-sub-python
 """
 
 
@@ -10,15 +10,8 @@ __maintainers__ = [
 ]
 
 
-# import threading
-
-# from uuid import uuid4
-
-from .subject import Subject
-
-
-class Publisher:
-    """Defines a Publisher who publishes the subjects
+class BasePublisher:
+    """Defines a BasePublisher who publishes the subjects.
     A SingleTon instance.
     """
     _subjects = {}
@@ -53,7 +46,8 @@ class Publisher:
         """
         """
         if subject not in self.subjects:
-            Subject(subject, value)  # automatically adds to self.subjects
+            from pspy.subject import Subject
+            Subject(subject, initial_value=value)  # automatically adds to self.subjects
         else:
             if value is not None:
                 self.subjects[subject].next(value)

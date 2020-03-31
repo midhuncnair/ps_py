@@ -15,7 +15,7 @@ import unittest
 
 from time import sleep
 
-from pspy import Publisher
+from pspy.publisher import Publisher
 
 
 class TestPublisherSuite(unittest.TestCase):
@@ -48,6 +48,13 @@ class TestPublisherSuite(unittest.TestCase):
         self.assertTrue('test_different_subject_addition' in pub.subjects)
         subject2 = pub.add('test_different_subject_addition', None)
         self.assertEqual(id(subject), id(subject2))
+
+    def test_subject_addition(self):
+        """
+        """
+        pub = Publisher()
+        subject = pub.add('test_subject_addition', 'test_val')
+        self.assertEqual(subject.value, 'test_val')
 
     def test_subscribe(self):
         """

@@ -1,5 +1,6 @@
 #! /usr/bin/env python3
 """This module implements init for the tests package of pub-sub-python
+``time python3.5 -m unittest tests -v``
 """
 
 

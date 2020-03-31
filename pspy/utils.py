@@ -3,7 +3,10 @@
 """
 
 
-# __all__ = []
+__all__ = [
+    'get_unique_id',
+    'import_string',
+]
 __version__ = '0.1.0.0'
 __author__ = 'Midhun C Nair <midhunch@gmail.com>'
 __maintainers__ = [
@@ -13,6 +16,9 @@ __maintainers__ = [
 
 from hashlib import (
     md5,
+)
+from importlib import (
+    import_module
 )
 
 
@@ -37,3 +43,24 @@ def get_unique_id(key):
         ),
         crc
     )
+
+
+def import_string(py_path):
+    """Tries to import the attribute of a module (function/class/...)
+    """
+    try:
+        m_path, a_name = py_path.rsplit('.', 1)
+    except ValueError as err:
+        raise ImportError("%s doesn't seem to be a valid python path" % py_path) from err
+
+    module = import_module(m_path)
+
+    try:
+        return getattr(module, a_name)
+    except AttributeError as err:
+        raise ImportError(
+            "Module %s doesn't seem to have an attribute with name %s" % (
+                m_path,
+                a_name,
+            )
+        ) from err
