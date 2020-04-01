@@ -76,6 +76,11 @@ class Of:
         thread.start()
         # thread.join()
 
+    def pipe(self, *args):
+        """
+        """
+        return self.subject.pipe(*args)
+
     @property
     def subscribers(self):
         """

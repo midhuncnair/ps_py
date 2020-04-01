@@ -36,24 +36,24 @@ class TestPublisherSuite(unittest.TestCase):
         """
         """
         pub1 = Publisher()
-        pub2 = Publisher(subject='test_initialize', value='test_value')
-        self.assertTrue('test_initialize' in pub1.subjects)
-        self.assertTrue('test_initialize' in pub2.subjects)
+        pub2 = Publisher(subject='TestPublisherSuite_test_initialize', value='test_value')
+        self.assertTrue('TestPublisherSuite_test_initialize' in pub1.subjects)
+        self.assertTrue('TestPublisherSuite_test_initialize' in pub2.subjects)
 
     def test_different_subject_addition(self):
         """
         """
         pub = Publisher()
-        subject = pub.get_subject('test_different_subject_addition')
-        self.assertTrue('test_different_subject_addition' in pub.subjects)
-        subject2 = pub.add('test_different_subject_addition', None)
+        subject = pub.get_subject('TestPublisherSuite_test_different_subject_addition')
+        self.assertTrue('TestPublisherSuite_test_different_subject_addition' in pub.subjects)
+        subject2 = pub.add('TestPublisherSuite_test_different_subject_addition', None)
         self.assertEqual(id(subject), id(subject2))
 
     def test_subject_addition(self):
         """
         """
         pub = Publisher()
-        subject = pub.add('test_subject_addition', 'test_val')
+        subject = pub.add('TestPublisherSuite_test_subject_addition', 'test_val')
         self.assertEqual(subject.value, 'test_val')
 
     def test_subscribe(self):
@@ -89,30 +89,30 @@ class TestPublisherSuite(unittest.TestCase):
 
         # base for subject = test_next1
         self.assertEqual(test_var1, False)
-        pub.get_subject('test_next1')
-        pub.subscribe('test_next1', onSuccess=on_success1)
+        pub.get_subject('TestPublisherSuite_test_next1')
+        pub.subscribe('TestPublisherSuite_test_next1', onSuccess=on_success1)
         self.assertEqual(test_var1, False)
-        pub.next('test_next1', True)
+        pub.next('TestPublisherSuite_test_next1', True)
         sleep(.1)
         self.assertEqual(test_var1, True)
 
         # base for subject = test_next2
         self.assertEqual(test_var2, False)
-        pub.get_subject('test_next2')
-        pub.subscribe('test_next2', onSuccess=on_success2)
+        pub.get_subject('TestPublisherSuite_test_next2')
+        pub.subscribe('TestPublisherSuite_test_next2', onSuccess=on_success2)
         self.assertEqual(test_var2, False)
-        pub.next('test_next2', True)
+        pub.next('TestPublisherSuite_test_next2', True)
         sleep(.1)
         self.assertEqual(test_var2, True)
 
         # cross test by changing subject test_next1
-        pub.next('test_next1', 'new_val')
+        pub.next('TestPublisherSuite_test_next1', 'new_val')
         sleep(.1)
         self.assertEqual(test_var1, 'new_val')  # value should change
         self.assertEqual(test_var2, True)  # should be last value.
 
         # cross test by changing subject test_next2
-        pub.next('test_next2', 'new_val2')
+        pub.next('TestPublisherSuite_test_next2', 'new_val2')
         sleep(.1)
         self.assertEqual(test_var1, 'new_val')  # shold be last value.
         self.assertEqual(test_var2, 'new_val2')  # value should change
@@ -122,10 +122,10 @@ class TestPublisherSuite(unittest.TestCase):
         """
         pub = Publisher()
         self.assertTrue(isinstance(pub.subjects, dict))
-        pub.get_subject('test_subject_property')
+        pub.get_subject('TestPublisherSuite_test_subject_property')
         self.assertTrue(isinstance(pub.subjects, dict))
-        self.assertTrue('test_subject_property' in pub.subjects)
-        pub.get_subject('test_subject_property1')
+        self.assertTrue('TestPublisherSuite_test_subject_property' in pub.subjects)
+        pub.get_subject('TestPublisherSuite_test_subject_property1')
         self.assertTrue(isinstance(pub.subjects, dict))
-        self.assertTrue('test_subject_property' in pub.subjects)
-        self.assertTrue('test_subject_property1' in pub.subjects)
+        self.assertTrue('TestPublisherSuite_test_subject_property' in pub.subjects)
+        self.assertTrue('TestPublisherSuite_test_subject_property1' in pub.subjects)

@@ -82,6 +82,11 @@ class Merge:
         """
         self.subject.next(error, error=True)
 
+    def pipe(self, *args):
+        """
+        """
+        return self.subject.pipe(*args)
+
     @property
     def subscribers(self):
         """

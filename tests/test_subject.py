@@ -35,9 +35,9 @@ class TestSubjectSuite(unittest.TestCase):
     def test_initialize_same_subject(self):
         """
         """
-        sub1 = Subject('test_initialize', initial_value='val1')
+        sub1 = Subject('TestSubjectSuite_test_initialize', initial_value='val1')
         sub1.subscribe(onSuccess=lambda value: None, onError=lambda error: None)
-        sub2 = Subject('test_initialize', initial_value='val2')
+        sub2 = Subject('TestSubjectSuite_test_initialize', initial_value='val2')
         self.assertEqual(id(sub1), id(sub2))
         self.assertNotEqual(sub1.value, 'val1')
         self.assertEqual(sub1.value, 'val2')
@@ -48,14 +48,14 @@ class TestSubjectSuite(unittest.TestCase):
     def test_initialize_publisher_singleton(self):
         """
         """
-        sub1 = Subject('test_initialize_publisher_singleton', initial_value='val1')
-        sub2 = Subject('test_initialize_publisher_singleton1', initial_value='val1')
+        sub1 = Subject('TestSubjectSuite_test_initialize_publisher_singleton', initial_value='val1')
+        sub2 = Subject('TestSubjectSuite_test_initialize_publisher_singleton1', initial_value='val1')
         self.assertEqual(id(sub1.publisher), id(sub2.publisher))
 
     def test_initialize_string_sub(self):
         """
         """
-        sub = Subject('test_initialize')
+        sub = Subject('TestSubjectSuite_test_initialize')
         self.assertTrue(hasattr(sub, 'subject'))
         self.assertTrue(hasattr(sub, 'initial_value'))
         self.assertTrue(hasattr(sub, 'value'))
@@ -83,7 +83,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_subscribe(self):
         """
         """
-        sub = Subject('test_subscribe', initial_value='val1')
+        sub = Subject('TestSubjectSuite_test_subscribe', initial_value='val1')
         test_val = False
         def on_success(value):
             nonlocal test_val
@@ -99,7 +99,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_pipe(self):
         """
         """
-        sub = Subject('test_pipe', initial_value='val1')
+        sub = Subject('TestSubjectSuite_test_pipe', initial_value='val1')
 
         t_val1 = False
         def on_success(value):
@@ -125,7 +125,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_next(self):
         """
         """
-        sub = Subject('test_next', initial_value='val1')
+        sub = Subject('TestSubjectSuite_test_next', initial_value='val1')
         t_val1 = False
         def on_success1(value):
             nonlocal t_val1
@@ -171,7 +171,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_next_async(self):
         """
         """
-        sub = Subject('test_next_async', initial_value='val1')
+        sub = Subject('TestSubjectSuite_test_next_async', initial_value='val1')
         t_val1 = False
         def on_success1(value):
             nonlocal t_val1
@@ -205,7 +205,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_unsubscribe(self):
         """
         """
-        sub = Subject('test_unsubscribe', initial_value='val1')
+        sub = Subject('TestSubjectSuite_test_unsubscribe', initial_value='val1')
         t_val1 = False
         def on_success1(value):
             nonlocal t_val1
@@ -238,8 +238,8 @@ class TestSubjectSuite(unittest.TestCase):
     def test_add_subscriber(self):
         """
         """
-        sub = Subject('test_add_subscriber', initial_value='val1')
-        sub2 = Subject('test_add_subscriber_1', initial_value='val1')
+        sub = Subject('TestSubjectSuite_test_add_subscriber', initial_value='val1')
+        sub2 = Subject('TestSubjectSuite_test_add_subscriber_1', initial_value='val1')
         subs = Subscriber(sub, onSuccess=lambda value: None)
 
         self.assertTrue(subs.name in sub.subscribers)
@@ -256,7 +256,7 @@ class TestSubjectSuite(unittest.TestCase):
     def test_add_subscriber_wrong_type(self):
         """
         """
-        sub = Subject('test_add_subscriber', initial_value='val1')
+        sub = Subject('TestSubjectSuite_test_add_subscriber_wrong_type', initial_value='val1')
         with self.assertRaises(ValueError):
             sub.add_subscriber("test")
 

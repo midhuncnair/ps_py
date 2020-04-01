@@ -49,7 +49,7 @@ class TestMergeSuite(unittest.TestCase):
     def test_merge_wrong_input_2(self):
         """
         """
-        sub = Subject("test_merge_wrong_input_2", 'init')
+        sub = Subject("TestMergeSuite_test_merge_wrong_input_2", 'init')
         merge = Merge(sub)
         with self.assertRaises(ValueError):
             merge.args = "test"
@@ -65,7 +65,7 @@ class TestMergeSuite(unittest.TestCase):
     def test_initialize_2(self):
         """
         """
-        sub = Subject("test_initialize_2", 'init')
+        sub = Subject("TestMergeSuite_test_initialize_2", 'init')
         merge = Merge(sub)
         self.assertTrue(hasattr(merge, 'id'))
         self.assertTrue(hasattr(merge, 'int_id'))
@@ -75,8 +75,8 @@ class TestMergeSuite(unittest.TestCase):
     def test_merge_subscribe(self):
         """
         """
-        sub1 = Subject("test_merge_subscribe1", None)
-        sub2 = Subject("test_merge_subscribe2", None)
+        sub1 = Subject("TestMergeSuite_test_merge_subscribe1", None)
+        sub2 = Subject("TestMergeSuite_test_merge_subscribe2", None)
 
         merge = Merge(sub1, sub2)
 
@@ -104,6 +104,46 @@ class TestMergeSuite(unittest.TestCase):
         sub2.next("sub2 - new1")
         sleep(NEXT_WAIT)
         self.assertEqual(test_val, "sub2 - new1")
+
+    def test_pipe(self):
+        """
+        """
+        sub1 = Subject('TestMergeSuite_test_pipe_1', initial_value='val1')
+        sub2 = Subject('TestMergeSuite_test_pipe_2', initial_value='val2')
+
+        merge = Merge(sub1, sub2)
+
+        t_val1 = []
+        def on_success(value):
+            nonlocal t_val1
+            t_val1.append(value)
+
+        def on_success_pipe1(value):
+            return "%s:%s:123" % (value, 'what')
+
+        def on_successpipe2(value):
+            return "%s:%s" % (value, 'why')
+
+        self.assertListEqual(t_val1, [])
+        merge.pipe(
+            psmap(onSuccess=on_success_pipe1),
+            psmap(onSuccess=on_successpipe2),
+        ).subscribe(onSuccess=on_success)
+
+        sub1.next('new_val1')
+        sleep(NEXT_WAIT)
+        sub2.next('new_val2')
+        sleep(NEXT_WAIT)
+
+        self.assertListEqual(
+            t_val1,
+            [
+                'val1:what:123:why',
+                'val2:what:123:why',
+                'new_val1:what:123:why',
+                'new_val2:what:123:why',
+            ]
+        )
 
 
 class TestOfSuite(unittest.TestCase):
