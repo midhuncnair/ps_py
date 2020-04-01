@@ -28,7 +28,6 @@ class BaseSubject:
     """Defines a subject to which anyone can subscribe to.
     """
     _publisher = None
-    _lock = threading.Lock()
 
     def __new__(cls, subject, *args, initial_value=None, **kwargs):
         """
@@ -39,6 +38,8 @@ class BaseSubject:
             pub.subjects[subject] = super().__new__(cls)
             cls._publisher = pub
             cls.SubscriberClass = import_string('pspy.subscriber.Subscriber')
+            cls._lock = threading.Lock()
+            cls._pipe = None
         else:
             if initial_value is not None:
                 pub.subjects[subject].next(initial_value)
@@ -51,7 +52,6 @@ class BaseSubject:
         self.subject = subject
         self.initial_value = initial_value
         self.value = initial_value
-        # self.SubscriberClass = import_string('pspy.subscriber.Subscriber')
 
     @property
     def publisher(self):
@@ -84,7 +84,6 @@ class BaseSubject:
     def add_subscriber(self, subscriber):
         """
         """
-        # from pspy.subscriber import Subscriber
         if not isinstance(subscriber, self.SubscriberClass):
             raise ValueError(
                 "Expected value of type Subscriber but got %s." % type(subscriber)
@@ -98,8 +97,11 @@ class BaseSubject:
     def pipe(self, *args):
         """
         """
+        item = None
         for arg in args:
-            self.add_pipe(arg)
+            item = self.add_pipe(arg)
+
+        return item
 
     def add_pipe(self, item):
         """
@@ -115,6 +117,13 @@ class BaseSubject:
             )
 
         self.pipes.append(item)
+
+        if self._pipe is None:
+            self._pipe = item
+        else:
+            self._pipe.add_pipe(item)
+
+        return item
 
     def call_target(self, target, *args, executer=None, **kwargs):
         """
@@ -136,12 +145,12 @@ class BaseSubject:
         """
         calls = []
         self._lock.acquire()
-        for pipe in self.pipes:
+        if self._pipe is not None:
             calls.append(
                 self.call_target(
-                    pipe.onSuccess,
+                    self._pipe.onSuccess,
                     value,
-                    executer=executer
+                    executer=executer,
                 )
             )
 
@@ -161,12 +170,12 @@ class BaseSubject:
         """
         calls = []
         self._lock.acquire()
-        for pipe in self.pipes:
+        if self._pipe is not None:
             calls.append(
                 self.call_target(
-                    pipe.onError,
+                    self._pipe.onError,
                     error,
-                    executer=executer
+                    executer=executer,
                 )
             )
 

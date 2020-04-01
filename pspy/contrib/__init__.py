@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""This module will initializes pspy aka pub-sub-python package
+"""This module will initializes contrib package for pub-sub-python package
 """
 
 
@@ -9,7 +9,6 @@ __maintainers__ = [
     'Midhun C Nair <midhunch@gmail.com>',
 ]
 
-
-from .subscriber import Subscriber
-from .publisher import Publisher
-from .subject import Subject
+from .merge import Merge
+from .ofsubject import Of
+from .pipe_map import map, Map

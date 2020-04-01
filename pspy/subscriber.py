@@ -51,9 +51,9 @@ class Subscriber:
     def subject(self, value):
         """
         """
-        from .subject import Subject
-        if not isinstance(value, Subject):
-            raise ValueError("Expected subject of type Subject but got %s" %(type(value)))
+        from .subject import BaseSubject
+        if not isinstance(value, BaseSubject):
+            raise ValueError("Expected subject of type BaseSubject but got %s" %(type(value)))
         self._subject = value
 
     @property

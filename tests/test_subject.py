@@ -5,7 +5,6 @@
 
 __all__ = [
     'TestSubjectSuite',
-    # 'TestSubjectFromCallableSuite',
 ]
 __version__ = '0.1.0.0'
 __author__ = 'Midhun C Nair <midhunch@gmail.com>'
@@ -103,25 +102,25 @@ class TestSubjectSuite(unittest.TestCase):
         sub = Subject('test_pipe', initial_value='val1')
 
         t_val1 = False
-        def on_success1(value):
+        def on_success(value):
             nonlocal t_val1
             t_val1 = value
 
-        t_val2 = False
-        def on_success2(value):
-            nonlocal t_val2
-            t_val2 = value
+        def on_success_pipe1(value):
+            return "%s:%s:123" % (value, 'what')
+
+        def on_successpipe2(value):
+            return "%s:%s" % (value, 'why')
 
         self.assertEqual(t_val1, False)
-        self.assertEqual(t_val2, False)
         sub.pipe(
-            psmap(onSuccess=on_success1),
-            psmap(onSuccess=on_success2),
-        )
+            psmap(onSuccess=on_success_pipe1),
+            psmap(onSuccess=on_successpipe2),
+        ).subscribe(onSuccess=on_success)
+
         sub.next('val2')
-        sleep(NEXT_WAIT)
-        self.assertEqual(t_val1, 'val2')
-        self.assertEqual(t_val2, 'val2')
+        sleep(NEXT_WAIT*2)
+        self.assertEqual(t_val1, 'val2:what:123:why')
 
     def test_next(self):
         """

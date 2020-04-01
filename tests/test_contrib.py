@@ -186,11 +186,96 @@ class TestMapClassSuite(unittest.TestCase):
     def test_initialize(self):
         """
         """
-        success = lambda value: print(value)
+        success = lambda value: None
+        error = lambda error: None
+        map_obj = psMap(subject='TestMapClassSuite_test_initialize', success=success, error=error)
+        self.assertTrue(hasattr(map_obj, 'subject'))
+        self.assertTrue(hasattr(map_obj, 'initial_value'))
+        self.assertTrue(hasattr(map_obj, 'value'))
+        self.assertTrue(hasattr(map_obj, '_args'))
+        self.assertTrue(hasattr(map_obj, '_kwargs'))
+        self.assertTrue(hasattr(map_obj, 'index'))
+        self.assertTrue(hasattr(map_obj, 'mapSub'))
+        self.assertEqual(map_obj.index, -1)
+        self.assertTupleEqual(map_obj._args, tuple())
+        self.assertDictEqual(map_obj._kwargs, dict())
+        self.assertFalse(map_obj.mapSub.name in map_obj.subscribers)
+
+    def test_subscribe(self):
+        """
+        """
+        sub = Subject('TestMapClassSuite_test_subscribe', initial_value='val1')
+        def on_success_pipe1(value):
+            return "%s:%s:123" % (value, 'what')
+
+        error = lambda error: None
+
+        test_val = False
+        def on_success(value):
+            nonlocal test_val
+            test_val = value
+        self.assertEqual(test_val, False)
+
+        map_obj = psMap(
+            subject='TestMapClassSuite_test_subscribe_map',
+            success=on_success_pipe1,
+            error=error
+        )
+        map_obj.subscribe(onSuccess=on_success)
+        self.assertEqual(test_val, None)
+
+        sub.pipe(map_obj)
+
+        sub.next('val2')
+        sleep(NEXT_WAIT)
+        self.assertEqual(test_val, 'val2:what:123')
+
+    def test_pipe(self):
+        """
+        """
+        sub = Subject('TestMapClassSuite_test_pipe', initial_value='val1')
+        def on_success_pipe1(value):
+            return "%s:%s:123" % (value, 'what')
+
+        def on_successpipe2(value):
+            return "%s:%s" % (value, 'why')
+
         error = lambda error: print(error)
-        map_obj = psMap(success, error)
-        self.assertEqual(id(success), id(map_obj.onSuccess))
-        self.assertEqual(id(error), id(map_obj.onError))
+
+        test_val_1 = False
+        def on_success_1(value):
+            nonlocal test_val_1
+            test_val_1 = value
+        self.assertEqual(test_val_1, False)
+
+        test_val_2 = False
+        def on_success_2(value):
+            nonlocal test_val_2
+            test_val_2 = value
+        self.assertEqual(test_val_2, False)
+
+        map_obj_1 = psMap(
+            subject='TestMapClassSuite_test_pipe_map_1',
+            success=on_success_pipe1,
+            error=error
+        )
+        map_obj_1.subscribe(onSuccess=on_success_1)
+        map_obj_2 = psMap(
+            subject='TestMapClassSuite_test_pipe_map_2',
+            success=on_successpipe2,
+            error=error
+        )
+        map_obj_2.subscribe(onSuccess=on_success_2)
+        self.assertEqual(test_val_1, None)
+        self.assertEqual(test_val_2, None)
+
+        sub.pipe(map_obj_1)
+        map_obj_1.pipe(map_obj_2)
+
+        sub.next('val2')
+        sleep(NEXT_WAIT)
+        self.assertEqual(test_val_1, 'val2:what:123')
+        self.assertEqual(test_val_2, 'val2:what:123:why')
 
 
 class TestMapSuite(unittest.TestCase):
@@ -211,18 +296,15 @@ class TestMapSuite(unittest.TestCase):
     def test_output_1(self):
         """
         """
-        success = lambda value: print(value)
-        error = lambda error: print(error)
+        success = lambda value: None
+        error = lambda error: None
         map_obj = psmap(success, error)
         self.assertTrue(isinstance(map_obj, psMap))
-        self.assertEqual(id(success), id(map_obj.onSuccess))
-        self.assertEqual(id(error), id(map_obj.onError))
 
     def test_output_2(self):
         """
         """
-        success = lambda value: print(value)
+        success = lambda value: None
         map_obj = psmap(success,)
         self.assertTrue(isinstance(map_obj, psMap))
-        self.assertEqual(id(success), id(map_obj.onSuccess))
         self.assertTrue(callable(map_obj.onError))
