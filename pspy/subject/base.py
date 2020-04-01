@@ -92,7 +92,11 @@ class BaseSubject:
         self.subscribers[subscriber.name] = subscriber
         subscriber.subject = self
         self._lock.release()
-        self.call_target(subscriber.success, self.value)
+        if not (
+            self.value is None
+            and self.value == self.initial_value
+        ):
+            self.call_target(subscriber.success, self.value)
 
     def pipe(self, *args):
         """
@@ -100,6 +104,13 @@ class BaseSubject:
         item = None
         for arg in args:
             item = self.add_pipe(arg)
+
+        if not (
+            self.value is None
+            and self.value == self.initial_value
+        ):
+            self.call_target(self._pipe.onSuccess, self.value)
+
 
         return item
 
@@ -216,7 +227,7 @@ class BaseSubject:
         thread.daemon = True
         thread.start()
 
-        return calls
+        # return calls
 
     @property
     def subscribers(self):

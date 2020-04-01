@@ -87,8 +87,7 @@ class TestMergeSuite(unittest.TestCase):
 
         self.assertEqual(test_val, False)
         merge.subscribe(onSuccess=on_success)
-        sleep(NEXT_WAIT)
-        self.assertEqual(test_val, None)
+        self.assertEqual(test_val, False)
 
         sub1.next("sub1 - new")
         sleep(NEXT_WAIT)
@@ -222,7 +221,7 @@ class TestMapClassSuite(unittest.TestCase):
             error=error
         )
         map_obj.subscribe(onSuccess=on_success)
-        self.assertEqual(test_val, None)
+        self.assertEqual(test_val, False)
 
         sub.pipe(map_obj)
 
@@ -266,8 +265,8 @@ class TestMapClassSuite(unittest.TestCase):
             error=error
         )
         map_obj_2.subscribe(onSuccess=on_success_2)
-        self.assertEqual(test_val_1, None)
-        self.assertEqual(test_val_2, None)
+        self.assertEqual(test_val_1, False)
+        self.assertEqual(test_val_2, False)
 
         sub.pipe(map_obj_1)
         map_obj_1.pipe(map_obj_2)

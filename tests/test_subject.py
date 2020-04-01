@@ -66,7 +66,7 @@ class TestSubjectSuite(unittest.TestCase):
         self.assertTupleEqual(sub._args, tuple())
         self.assertDictEqual(sub._kwargs, dict())
 
-    def test_initialize_string_callable(self):
+    def test_initialize_callable_sub(self):
         """
         """
         sub = Subject(lambda x=None: None)
@@ -279,8 +279,7 @@ class TestSubjectSuite(unittest.TestCase):
         self.assertEqual(test_output, False)
         sub = Subject(callable_subject, *test_args, **test_kwargs)
         sub.subscribe(onSuccess=on_success)
-        sleep(NEXT_WAIT)
-        self.assertEqual(test_output, None)
+        self.assertEqual(test_output, False)
         sleep(2*ASYNC_TIME + NEXT_WAIT)
         self.assertTupleEqual(test_output[0], test_args)
         self.assertDictEqual(test_output[1], test_kwargs)
