@@ -62,7 +62,9 @@ class TestSubjectSuite(unittest.TestCase):
         self.assertTrue(hasattr(sub, '_args'))
         self.assertTrue(hasattr(sub, '_kwargs'))
         self.assertTrue(hasattr(sub, 'index'))
+        self.assertTrue(hasattr(sub, 'name'))
         self.assertEqual(sub.index, -1)
+        self.assertEqual(sub.name, 'TestSubjectSuite_test_initialize')
         self.assertTupleEqual(sub._args, tuple())
         self.assertDictEqual(sub._kwargs, dict())
 

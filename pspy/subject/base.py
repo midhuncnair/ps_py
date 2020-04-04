@@ -34,17 +34,19 @@ class BaseSubject:
         """
         Publisher = import_string('pspy.publisher.Publisher')
         pub = Publisher()
-        if subject not in pub.subjects:
-            pub.subjects[subject] = super().__new__(cls)
-            cls._publisher = pub
-            cls.SubscriberClass = import_string('pspy.subscriber.Subscriber')
-            cls._lock = threading.Lock()
-            cls._pipe = None
+        name = subject if not callable(subject) else id(subject)
+        if name not in pub.subjects:
+            pub.subjects[name] = super().__new__(cls)
+            pub.subjects[name]._publisher = pub
+            pub.subjects[name].SubscriberClass = import_string('pspy.subscriber.Subscriber')
+            pub.subjects[name]._lock = threading.Lock()
+            pub.subjects[name]._pipe = None
+            pub.subjects[name].name = name
         else:
             if initial_value is not None:
-                pub.subjects[subject].next(initial_value)
+                pub.subjects[name].next(initial_value)
 
-        return pub.subjects[subject]
+        return pub.subjects[name]
 
     def __init__(self, subject, initial_value=None):
         """

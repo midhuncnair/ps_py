@@ -28,6 +28,75 @@ Installation and Basic Configuration
 ------------------------------------
 
 1. Install PSPY: Pub-Sub-Python by running ``pip install pspy``.
+2. There is no specific configuration needed to use pspy.
+
+.. code:: python
+
+    # **non-callable subject**
+    # publisher code
+    from pspy.publisher import Publisher
+    publisher = Publisher()
+    subject = publisher.add('example_subject', initial_value='example_value')
+    subject.next('example_value_1')  # to publish new value.
+
+    # subscriber code
+    from pspy.publisher import Publisher
+    publisher = Publisher()
+    subject = publisher.get_subject('example_subject')
+    # NOTE: The above will create a new subject **if and only if** the subject doesn't exist.
+
+    """Assuming ``on_success``, ``on_error`` are already defined somewhere
+    before the below statement.
+    ``onSuccess`` is mandatory to subscribe; whereas ``onError`` is optional.
+    ``onSuccess``, ``onError``: can be either callable or a ``dict`` of format shown below:
+    ``{'func': <callable>, 'args': <None | list | tuple>, 'kwargs': <None | dict>}``
+    ``onSuccess``: The callable defined either directly or via dict should take a
+    argument (positional or keyword) with name ``value``.
+    ``onError``: The callable defined either directly or via dict should take a
+    argument (positional or keyword) with name ``error``.
+    """
+    subscriber = subject.subscribe(onSuccess=on_success, onError=on_error)
+    """That is it. at any point the publisher publishes any thing to this subject
+    the ``onSuccess`` or ``onError`` will be called accordingly.
+    NOTE: if the subject has any value which is not None and not initial_value,
+    it will be passed to ``onSuccess`` right away.
+    """
+    # to unsubscribe
+    subscriber.unsubscribe()
+
+    # **callable subject**
+    # there is no publisher code for this because the callable will be the publisher
+    from pspy.publisher import Publisher
+    publisher = Publisher()
+    subject = publisher.add(lambda x,y,z=None: (x, y, z), 'x', 'y', 'z'='z_val', initial_value='init')
+    # syntax: subject = publisher.add(<function>, *args, **kwargs)
+    """NOTE: The subject callable will not be called/executed until the first subscribe.
+    If no subscription the the subject callable will never be called/executed.
+    """
+    subscriber = subject.subscribe(onSuccess=on_success, onError=on_error)
+
+    # **Creating subjects and using it directly**
+    from pspy.subject import Subject
+    # for non-callable subject
+    # Subject constructor takes in one mandatory value that is subject unique identifier.
+    # ``initial_value`` is optional.
+    subject = Subject('example_subject', initial_value='example_value')
+    subject.next('example_value_1')
+
+    """Assuming ``on_success``, ``on_error`` are already defined somewhere
+    before the below statement.
+    """
+    subscriber = subject.subscribe(onSuccess=on_success, onError=on_error)
+
+    # for callable subject
+    subject = Subject(lambda x,y,z=None: (x, y, z), 'x', 'y', 'z'='z_val', initial_value='init')
+    """NOTE: The function passed
+
+    """Assuming ``on_success``, ``on_error`` are already defined somewhere
+    before the below statement.
+    """
+    subscriber = subject.subscribe(onSuccess=on_success, onError=on_error)
+
 
 
 Basic Usage
@@ -101,6 +170,80 @@ example::
     ofPipe:['v', 'a', 'l', '2']
     of_direct:{'l': 3, 'v': 'a'}
     ofPipe:{'l': 3, 'v': 'a'}
+
+
+Publisher APIs
+==============
+
+
+subjects
+--------
+
+* type: property
+* input: None
+* output: type->dict; {<subject_name>: <subject>}
+
+
+get_subject
+-----------
+
+* type: method
+* input: subject<str | callable>
+* output: type->Subject; <subject>
+
+
+add
+---
+
+* type: method
+* input: subject<str | callable>, *args, **kwargs
+* output: type->Subject; <subject>
+
+
+subscribe
+---------
+
+* type: method
+* input: subject<str | callable>, onSuccess<callable | dict {'func': <callable>, args: <None | list | tuple>>, onError<None | callable | dict {'func': <callable>, args: <None | list | tuple>>
+* output: type->Subscriber; <subscriber>
+
+
+next
+----
+
+* type: method
+* input: subject<str | callable>, value<any python picklable object>
+* output: None
+
+
+
+Subject APIs
+============
+
+
+publisher
+---------
+
+* type: property
+* input: None
+* output: type->Publisher; <publisher>
+
+
+subject
+-------
+
+* type: property
+* input: None
+* output: type->Str | callable; returns the input of the Subject constructor
+
+
+subscribe
+---------
+
+* type: method
+* input: onSuccess<callable | dict {'func': <callable>, args: <None | list | tuple>>, onError<None | callable | dict {'func': <callable>, args: <None | list | tuple>>
+* output: type->Subscriber; <subscriber>
+
 
 
 .. _python: http://python.org

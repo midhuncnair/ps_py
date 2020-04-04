@@ -21,15 +21,21 @@ class BasePublisher:
         """
         """
         if cls._instance is None:
+            from pspy.subject import Subject
             cls._instance = super().__new__(cls)
+            cls._instance.SubjectClass = Subject
 
         return cls._instance
 
-    def __init__(self, subject=None, value=None):
+    def __init__(self, subject=None, args=None, kwargs=None):
         """
         """
         if subject is not None:
-            self.add(subject, value)
+            args = args if args is not None else []
+            kwargs = kwargs if kwargs is not None else {}
+            if 'initial_value' not in kwargs:
+                kwargs['initial_value'] = None
+            self.add(subject, *args, **kwargs)
 
     @property
     def subjects(self):
@@ -40,26 +46,35 @@ class BasePublisher:
     def get_subject(self, subject):
         """
         """
-        return self.add(subject, None)
+        return self.add(subject, initial_value=None)
 
-    def add(self, subject, value):
+    def add(self, subject, *args, initial_value=None, **kwargs):
         """
         """
-        if subject not in self.subjects:
-            from pspy.subject import Subject
-            Subject(subject, initial_value=value)  # automatically adds to self.subjects
+        kwargs['initial_value'] = initial_value
+        name = subject if not callable(subject) else id(subject)
+        if name not in self.subjects:
+            self.SubjectClass(subject, *args, **kwargs)  # automatically adds to self.subjects
         else:
-            if value is not None:
-                self.subjects[subject].next(value)
+            if kwargs['initial_value'] is not None:
+                self.subjects[name].next(kwargs['initial_value'])
 
-        return self.subjects[subject]
+        return self.subjects[name]
 
     def subscribe(self, subject, onSuccess, onError=None):
         """
         """
-        return self.subjects[subject].subscribe(onSuccess, onError)
+        if isinstance(subject, self.SubjectClass):
+            return subject.subscribe(onSuccess, onError)
+
+        name = subject if not callable(subject) else id(subject)
+        return self.subjects[name].subscribe(onSuccess, onError)
 
     def next(self, subject, value):
         """
         """
-        return self.subjects[subject].next(value)
+        if isinstance(subject, self.SubjectClass):
+            return subject.next(value)
+
+        name = subject if not callable(subject) else id(subject)
+        return self.subjects[name].next(value)

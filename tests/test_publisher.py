@@ -36,7 +36,7 @@ class TestPublisherSuite(unittest.TestCase):
         """
         """
         pub1 = Publisher()
-        pub2 = Publisher(subject='TestPublisherSuite_test_initialize', value='test_value')
+        pub2 = Publisher(subject='TestPublisherSuite_test_initialize', kwargs={'initial_value':'test_value'})
         self.assertTrue('TestPublisherSuite_test_initialize' in pub1.subjects)
         self.assertTrue('TestPublisherSuite_test_initialize' in pub2.subjects)
 
@@ -46,14 +46,22 @@ class TestPublisherSuite(unittest.TestCase):
         pub = Publisher()
         subject = pub.get_subject('TestPublisherSuite_test_different_subject_addition')
         self.assertTrue('TestPublisherSuite_test_different_subject_addition' in pub.subjects)
-        subject2 = pub.add('TestPublisherSuite_test_different_subject_addition', None)
+        subject2 = pub.add('TestPublisherSuite_test_different_subject_addition', initial_value=None)
         self.assertEqual(id(subject), id(subject2))
+
+    def test_subject_addition_callable(self):
+        """
+        """
+        pub = Publisher()
+        subject = pub.add(lambda x,y,z=None: (x, y, z), 'x', 'y', z='z')
+        name = subject.name
+        self.assertTrue(name in pub.subjects)
 
     def test_subject_addition(self):
         """
         """
         pub = Publisher()
-        subject = pub.add('TestPublisherSuite_test_subject_addition', 'test_val')
+        subject = pub.add('TestPublisherSuite_test_subject_addition', initial_value='test_val')
         self.assertEqual(subject.value, 'test_val')
 
     def test_subscribe(self):

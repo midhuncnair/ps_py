@@ -121,13 +121,13 @@ class TestMergeSuite(unittest.TestCase):
         def on_success_pipe1(value):
             return "%s:%s:123" % (value, 'what')
 
-        def on_successpipe2(value):
+        def on_success_pipe2(value):
             return "%s:%s" % (value, 'why')
 
         self.assertListEqual(t_val1, [])
         merge.pipe(
             psmap(onSuccess=on_success_pipe1),
-            psmap(onSuccess=on_successpipe2),
+            psmap(onSuccess=on_success_pipe2),
         ).subscribe(onSuccess=on_success)
 
         sub1.next('new_val1')
