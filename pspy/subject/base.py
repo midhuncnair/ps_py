@@ -39,6 +39,7 @@ class BaseSubject:
             pub.subjects[name] = super().__new__(cls)
             pub.subjects[name]._publisher = pub
             pub.subjects[name].SubscriberClass = import_string('pspy.subscriber.Subscriber')
+            pub.subjects[name].PublisherClass = Publisher
             pub.subjects[name]._lock = threading.Lock()
             pub.subjects[name]._pipe = None
             pub.subjects[name].name = name
@@ -59,9 +60,8 @@ class BaseSubject:
     def publisher(self):
         """
         """
-        Publisher = import_string('pspy.publisher.Publisher')
-        if not isinstance(self._publisher, Publisher):
-            self._publisher = Publisher()
+        if not isinstance(self._publisher, self.PublisherClass):
+            self._publisher = self.PublisherClass()
         return self._publisher
 
     @property

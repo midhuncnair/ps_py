@@ -10,6 +10,11 @@ __maintainers__ = [
 ]
 
 
+from pspy.utils import (
+    import_string,
+)
+
+
 class BasePublisher:
     """Defines a BasePublisher who publishes the subjects.
     A SingleTon instance.
@@ -21,7 +26,7 @@ class BasePublisher:
         """
         """
         if cls._instance is None:
-            from pspy.subject import Subject
+            Subject = import_string('pspy.subject.Subject')
             cls._instance = super().__new__(cls)
             cls._instance.SubjectClass = Subject
 
