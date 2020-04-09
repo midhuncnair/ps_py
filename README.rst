@@ -172,6 +172,7 @@ example::
     ofPipe:{'l': 3, 'v': 'a'}
 
 
+
 Publisher APIs
 ==============
 
@@ -206,6 +207,7 @@ subscribe
 * type: method
 * input: subject<str | callable>, onSuccess<callable | dict {'func': <callable>, args: <None | list | tuple>>, onError<None | callable | dict {'func': <callable>, args: <None | list | tuple>>
 * output: type->Subscriber; <subscriber>
+* sideEffect: Will call the onSuccess if the subjects current_value != None and current_value != initial_value.
 
 
 next
@@ -243,6 +245,201 @@ subscribe
 * type: method
 * input: onSuccess<callable | dict {'func': <callable>, args: <None | list | tuple>>, onError<None | callable | dict {'func': <callable>, args: <None | list | tuple>>
 * output: type->Subscriber; <subscriber>
+* sideEffect: Will call the onSuccess if the subjects current_value != None and current_value != initial_value.
+
+
+add_subscriber
+--------------
+
+* type: method
+* input: subscriber<Subscriber>
+* output: None
+* sideEffect: Will call the subscriber.success if the subjects current_value != None and current_value != initial_value.
+
+
+pipe
+----
+
+* type: method
+* input: map<Map>, [map<Map>, ...]
+* output: map<Map>  # latest pipe to which you can subscribe.
+
+
+add_pipe
+--------
+
+* type: method
+* input: map<Map>
+* output: map<Map>  # latest pipe to which you can subscribe.
+
+
+next
+----
+
+* type: method
+* input: value<any python picklable object>, error<boolean> (default=False)
+* output: None
+
+
+subscribers
+-----------
+
+* type: property
+* input: None
+* output: dict->{<subscriber_name>: subscriber<Subscriber>, ...}
+
+
+pipes
+-----
+
+* type: property
+* input: None
+* output: list-> [pipe<Map>, ...]
+
+
+value
+-----
+
+* type: property
+* input: None
+* output: value<current value of the subject; any python picklable object>
+
+
+unsubscribe
+-----------
+
+* type: method
+* input: subscriber<Subscriber>
+* output: None
+
+
+
+Subscriber APIs
+===============
+
+
+name
+----
+
+* type: property
+* input: None
+* output: type-> str
+
+
+subject
+-------
+
+* type: property
+* input: None
+* output: type-> Subject; The subject to which this subscriber is subscribed to
+
+
+onSuccess
+---------
+
+* type: property
+* input: None
+* output: type-> partial func; The validated&modified input onSuccess.
+
+
+onError
+---------
+
+* type: property
+* input: None
+* output: type-> partial func; The validated&modified input onError.
+
+
+success
+-------
+
+* type: method
+* input: value <any python picklable object>
+* output: None
+
+
+error
+-----
+
+* type: method
+* input: error <any python picklable object; mostly Exception object>
+* output: None
+
+
+unsubscribe
+-----------
+
+* type: method
+* input: None
+* output: None
+
+
+
+Merge APIs
+==========
+
+
+add
+---
+
+* type: method
+* input: sub<Subject | Subscribe>
+* output: None
+
+
+subscribe
+---------
+
+* type: method
+* input: onSuccess<callable | dict {'func': <callable>, args: <None | list | tuple>>, onError<None | callable | dict {'func': <callable>, args: <None | list | tuple>>
+* output: type->Subscriber; <subscriber>
+* sideEffect: Will call the onSuccess if the subjects current_value != None and current_value != initial_value.
+
+
+pipe
+----
+
+* type: property
+* input: None
+* output: list-> [pipe<Map>, ...]
+
+
+subscribers
+-----------
+
+* type: property
+* input: None
+* output: dict->{<subscriber_name>: subscriber<Subscriber>, ...}
+
+
+
+Of APIs
+=======
+
+
+subscribe
+---------
+
+* type: method
+* input: onSuccess<callable | dict {'func': <callable>, args: <None | list | tuple>>, onError<None | callable | dict {'func': <callable>, args: <None | list | tuple>>
+* output: type->Subscriber; <subscriber>
+* sideEffect: Will call the onSuccess if the subjects current_value != None and current_value != initial_value.
+
+
+pipe
+----
+
+* type: property
+* input: None
+* output: list-> [pipe<Map>, ...]
+
+
+subscribers
+-----------
+
+* type: property
+* input: None
+* output: dict->{<subscriber_name>: subscriber<Subscriber>, ...}
 
 
 
