@@ -2,6 +2,13 @@ PSPY: Pub-Sub-Python
 ================
 
 
+1.0.0.0
+-------
+
+* General Bugfixes
+* Testcases for all functionality
+
+
 0.1.0.0
 -------
 

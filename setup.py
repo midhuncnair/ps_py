@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Defines the setup for django-redis-sdk package
+"""Defines the setup for pspy package
 python3 -m pip install --user --upgrade setuptools wheel
 python3 setup.py sdist bdist_wheel
 python3 -m pip install --user --upgrade twine
@@ -12,7 +12,7 @@ python3 -m twine upload dist/*
 
 
 # __all__ = []
-__version__ = "1.0.0.0"
+__version__ = '1.0.0.0'
 __author__ = "Midhun C Nair<midhunch@gmail.com>"
 __maintainers__ = [
     "Midhun C Nair<midhunch@gmail.com>",
