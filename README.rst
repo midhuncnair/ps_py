@@ -1,5 +1,5 @@
 PSPY: Pub-Sub-Python
-================
+====================
 
 
 1.0.0.0
@@ -76,7 +76,7 @@ Installation and Basic Configuration
     from pspy.publisher import Publisher
     publisher = Publisher()
     subject = publisher.add(lambda x,y,z=None: (x, y, z), 'x', 'y', 'z'='z_val', initial_value='init')
-    # syntax: subject = publisher.add(<function>, *args, **kwargs)
+    # syntax: subject = publisher.add(<function>, ``*args``, ``**kwargs``)
     """NOTE: The subject callable will not be called/executed until the first subscribe.
     If no subscription the the subject callable will never be called/executed.
     """
@@ -204,7 +204,7 @@ add
 ---
 
 * type: method
-* input: subject<str | callable>, *args, **kwargs
+* input: subject<str | callable>, ``*args``, ``**kwargs``
 * output: type->Subject; <subject>
 
 
