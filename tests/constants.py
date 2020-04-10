@@ -7,7 +7,7 @@ __all__ = [
     'NEXT_WAIT',
     'ASYNC_TIME',
 ]
-__version__ = '1.0.0.0'
+__version__ = '1.0.0.1'
 __author__ = 'Midhun C Nair <midhunch@gmail.com>'
 __maintainers__ = [
     'Midhun C Nair <midhunch@gmail.com>',

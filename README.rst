@@ -2,6 +2,11 @@ PS_PY: Pub-Sub-Python
 =====================
 
 
+1.0.0.1
+-------
+
+* package name changes from pspy to ps_py due to conflict.
+
 1.0.0.0
 -------
 
