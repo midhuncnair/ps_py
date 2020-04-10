@@ -1,4 +1,4 @@
-PSPY: Pub-Sub-Python
+PS_PY: Pub-Sub-Python
 ====================
 
 
@@ -12,7 +12,7 @@ PSPY: Pub-Sub-Python
 0.1.0.0
 -------
 
-PSPY: A Event Driven programming helper.
+PS_PY: A Event Driven programming helper.
 
 * Can create ``callable`` and non-``callable`` subjects.
 * Supports any python picklable objects as value.
@@ -34,7 +34,7 @@ QuickStart
 Installation and Basic Configuration
 ------------------------------------
 
-1. Install PSPY: Pub-Sub-Python by running ``pip install ps_py``.
+1. Install PS_PY: Pub-Sub-Python by running ``pip install ps_py``.
 2. There is no specific configuration needed to use ps_py.
 
 .. code:: python
@@ -97,7 +97,7 @@ Installation and Basic Configuration
 
     # for callable subject
     subject = Subject(lambda x,y,z=None: (x, y, z), 'x', 'y', 'z'='z_val', initial_value='init')
-    """NOTE: The function passed
+    """NOTE: The function passed is called only at the fisrt subscription."""
 
     """Assuming ``on_success``, ``on_error`` are already defined somewhere
     before the below statement.
@@ -109,7 +109,7 @@ Installation and Basic Configuration
 Basic Usage
 ===========
 
-Below are some basic ussage for PSPY package.
+Below are some basic ussage for PS_PY package.
 
 example::
 
