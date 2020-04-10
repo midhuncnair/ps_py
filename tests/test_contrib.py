@@ -24,13 +24,13 @@ from time import (
     time,
 )
 
-from pspy.contrib import (
+from ps_py.contrib import (
     Merge,
     Of,
     Map as psMap,
     map as psmap,
 )
-from pspy.subject import Subject
+from ps_py.subject import Subject
 
 from .constants import (
     NEXT_WAIT,

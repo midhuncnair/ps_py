@@ -10,7 +10,7 @@ __maintainers__ = [
 ]
 
 
-from pspy.utils import (
+from ps_py.utils import (
     import_string,
 )
 
@@ -26,7 +26,7 @@ class BasePublisher:
         """
         """
         if cls._instance is None:
-            Subject = import_string('pspy.subject.Subject')
+            Subject = import_string('ps_py.subject.Subject')
             cls._instance = super().__new__(cls)
             cls._instance.SubjectClass = Subject
 

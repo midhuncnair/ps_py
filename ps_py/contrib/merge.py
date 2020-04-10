@@ -12,9 +12,9 @@ __maintainers__ = [
 
 from uuid import uuid4
 
-from pspy.subject import Subject
-from pspy.subscriber import Subscriber
-from pspy.utils import (
+from ps_py.subject import Subject
+from ps_py.subscriber import Subscriber
+from ps_py.utils import (
     get_unique_id,
 )
 

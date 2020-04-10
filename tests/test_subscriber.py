@@ -15,10 +15,10 @@ import unittest
 
 from time import sleep
 
-from pspy.subscriber import (
+from ps_py.subscriber import (
     Subscriber,
 )
-from pspy.subject import Subject
+from ps_py.subject import Subject
 
 from .constants import (
     NEXT_WAIT,

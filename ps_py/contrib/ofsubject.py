@@ -14,8 +14,8 @@ from threading import Thread
 from uuid import uuid4
 from time import sleep
 
-from pspy.subject import Subject
-from pspy.utils import (
+from ps_py.subject import Subject
+from ps_py.utils import (
     get_unique_id,
 )
 

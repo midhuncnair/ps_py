@@ -19,7 +19,7 @@ from concurrent.futures import (
     as_completed,
 )
 
-from pspy.utils import (
+from ps_py.utils import (
     import_string,
 )
 
@@ -32,13 +32,13 @@ class BaseSubject:
     def __new__(cls, subject, *args, initial_value=None, **kwargs):
         """
         """
-        Publisher = import_string('pspy.publisher.Publisher')
+        Publisher = import_string('ps_py.publisher.Publisher')
         pub = Publisher()
         name = subject if not callable(subject) else id(subject)
         if name not in pub.subjects:
             pub.subjects[name] = super().__new__(cls)
             pub.subjects[name]._publisher = pub
-            pub.subjects[name].SubscriberClass = import_string('pspy.subscriber.Subscriber')
+            pub.subjects[name].SubscriberClass = import_string('ps_py.subscriber.Subscriber')
             pub.subjects[name].PublisherClass = Publisher
             pub.subjects[name]._lock = threading.Lock()
             pub.subjects[name]._pipe = None
@@ -119,7 +119,7 @@ class BaseSubject:
     def add_pipe(self, item):
         """
         """
-        from pspy.contrib import (
+        from ps_py.contrib import (
             Map,
         )
         if not (

@@ -1,5 +1,5 @@
 #! /usr/bin/env python3
-"""This module will initializes pspy aka pub-sub-python package
+"""This module will initializes ps_py aka pub-sub-python package
 """
 
 

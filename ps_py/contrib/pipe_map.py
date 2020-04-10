@@ -12,7 +12,7 @@ __maintainers__ = [
 
 from uuid import uuid4
 
-from pspy.subject import BaseSubject
+from ps_py.subject import BaseSubject
 
 
 class Map(BaseSubject):

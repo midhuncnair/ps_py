@@ -63,10 +63,10 @@ import sys
 import os
 import pdb
 
-sys.path.insert(0, "/Users/midhunch/workspace/pspy")
+sys.path.insert(0, "/Users/midhunch/workspace/ps_py")
 
 
-from pspy import Subject, Publisher, Merge, Of, map
+from ps_py import Subject, Publisher, Merge, Of, map
 
 # sub = Subject("Midhun", "Handsome!")
 # pub = Publisher("Manisha", "Beautiful")

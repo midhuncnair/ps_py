@@ -17,11 +17,11 @@ import unittest
 
 from time import sleep
 
-from pspy.subject import Subject
-from pspy.contrib import (
+from ps_py.subject import Subject
+from ps_py.contrib import (
     map as psmap,
 )
-from pspy.subscriber import Subscriber
+from ps_py.subscriber import Subscriber
 
 from .constants import (
     NEXT_WAIT,

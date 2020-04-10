@@ -34,20 +34,20 @@ QuickStart
 Installation and Basic Configuration
 ------------------------------------
 
-1. Install PSPY: Pub-Sub-Python by running ``pip install pspy``.
-2. There is no specific configuration needed to use pspy.
+1. Install PSPY: Pub-Sub-Python by running ``pip install ps_py``.
+2. There is no specific configuration needed to use ps_py.
 
 .. code:: python
 
     # **non-callable subject**
     # publisher code
-    from pspy.publisher import Publisher
+    from ps_py.publisher import Publisher
     publisher = Publisher()
     subject = publisher.add('example_subject', initial_value='example_value')
     subject.next('example_value_1')  # to publish new value.
 
     # subscriber code
-    from pspy.publisher import Publisher
+    from ps_py.publisher import Publisher
     publisher = Publisher()
     subject = publisher.get_subject('example_subject')
     # NOTE: The above will create a new subject **if and only if** the subject doesn't exist.
@@ -73,7 +73,7 @@ Installation and Basic Configuration
 
     # **callable subject**
     # there is no publisher code for this because the callable will be the publisher
-    from pspy.publisher import Publisher
+    from ps_py.publisher import Publisher
     publisher = Publisher()
     subject = publisher.add(lambda x,y,z=None: (x, y, z), 'x', 'y', 'z'='z_val', initial_value='init')
     # syntax: subject = publisher.add(<function>, ``*args``, ``**kwargs``)
@@ -83,7 +83,7 @@ Installation and Basic Configuration
     subscriber = subject.subscribe(onSuccess=on_success, onError=on_error)
 
     # **Creating subjects and using it directly**
-    from pspy.subject import Subject
+    from ps_py.subject import Subject
     # for non-callable subject
     # Subject constructor takes in one mandatory value that is subject unique identifier.
     # ``initial_value`` is optional.
@@ -113,7 +113,7 @@ Below are some basic ussage for PSPY package.
 
 example::
 
-    >>>from pspy.subject import Subject
+    >>>from ps_py.subject import Subject
     >>>sbj = Subject('exp1', initial_value='val1')
     >>>sbj.value
     'val1'
@@ -136,7 +136,7 @@ example::
     >>>sbc2 = sbj2.subscribe(onSuccess=lambda value: print(value))
     ('args', 'kwargs')
 
-    >>>from pspy.contrib import map
+    >>>from ps_py.contrib import map
     >>>sbj = Subject("pip-map_ex", initial_value='val1')
     >>>sbj1 = sbj.pipe(map(lambda value: "%s:%s"%("modified", value)))
     >>>sbc = sbj1.subscribe(onSuccess=lambda value: print(value))
@@ -144,7 +144,7 @@ example::
     >>>sbj.next('new_val')
     modified:new_val
 
-    >>>from pspy.contrib import Merge, map
+    >>>from ps_py.contrib import Merge, map
     >>>sbj1 = Subject("Merge_ex_1")
     >>>sbj2 = Subject("Merge_ex_2")
     >>>mrg = Merge(sbj1, sbj2)
@@ -166,7 +166,7 @@ example::
     >>>sbj1.next("fifth_value")
     mergePipe:fifth_value  # this is the value printed by ``sbc1``'s ``onSuccess``
 
-    >>>from pspy.contrib import Of, map
+    >>>from ps_py.contrib import Of, map
     >>>of_obj = Of("val1", ["v", "a", "l", "2"], {"v": "a", "l":3}, timeout=2)
     >>>of_sbj = of_obj.pipe(map(lambda value: "%s:%s"%("ofPipe", value)))
     >>>sbc1 = of_sbj.subscribe(onSuccess=lambda value: print(value))

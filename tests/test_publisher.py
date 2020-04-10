@@ -15,7 +15,7 @@ import unittest
 
 from time import sleep
 
-from pspy.publisher import Publisher
+from ps_py.publisher import Publisher
 
 
 class TestPublisherSuite(unittest.TestCase):
